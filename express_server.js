@@ -1,8 +1,12 @@
+// --> INITIAL SERVER SETUP CODE.
 const express = require('express');
 const app = express();
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
+
+// --> Code to parse the body for POST requests.
+app.use(express.urlencoded({ extended: true }));
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -18,6 +22,11 @@ app.get('/urls', (req, res) => {
   res.render('urls_index', templateVars);
 });
 
+app.post('/urls', (req, res) => {
+  console.log(req.body);
+  res.send('Ok');
+});
+
 app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
@@ -27,6 +36,18 @@ app.get('/urls/:id', (req, res) => {
   res.render('urls_show', templateVars);
 });
 
+
+const generateRandomString = function() {
+  return Math.random().toString(36).slice(2, 8);
+};
+
+
+app.listen(PORT, () => {
+  console.log(`Example app listening on port ${PORT}`);
+});
+
+// --> EXAMPLE CODE
+
 // app.get('/urls.json', (req, res) => {
 //   res.json(urlDatabase);
 // });
@@ -34,8 +55,3 @@ app.get('/urls/:id', (req, res) => {
 // app.get('/hello', (req, res) => {
 //   res.send('<html><body>Hello <b>World</b></body></html>\n');
 // });
-
-app.listen(PORT, () => {
-  console.log(`Example app listening on port ${PORT}`);
-});
-
