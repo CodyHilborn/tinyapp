@@ -1,12 +1,21 @@
-// --> INITIAL SERVER SETUP CODE.
+// ==============================================================================================================
+//                                      INITIAL SERVER & MIDDLEWARE SETUP
+// ==============================================================================================================
 const express = require('express');
 const app = express();
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
 
-// --> Code to parse the body for POST requests.
+
+
+// --> Middleware code to parse the body for POST requests.
 app.use(express.urlencoded({ extended: true }));
+
+// ==============================================================================================================
+//                                       VARIABLES AND FUNCTIONS
+// ==============================================================================================================
+
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
@@ -18,10 +27,19 @@ const generateRandomString = function() {
   return Math.random().toString(36).slice(2, 8);
 };
 
+
+// ==============================================================================================================
+//                                      GET & POST REQUEST HANDLERS
+// ==============================================================================================================
+
+// ***** HOME PAGE *****
 app.get('/', (req, res) => {
   res.send('Hello!');
 });
+// ***
 
+
+// ***** MyURL'S PAGE *****
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
   const templateVars = { urls: urlDatabase };
@@ -29,31 +47,51 @@ app.get('/urls', (req, res) => {
 });
 
 app.post('/urls', (req, res) => {
-  // console.log(req.body);
+  // --> POST request to 
   // --> Creating new random string, assigning it as key in urlDatabase w/ form input as value.
   const newShortURL = generateRandomString();
   urlDatabase[newShortURL] = req.body.longURL;
-  console.log(urlDatabase);
-  res.send();
+  // --> Redirect to the urls_show page.
+  res.redirect(`/urls/${newShortURL}`);
 });
+// ***
 
+// ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
   res.render('urls_new');
 });
+// ***
 
+// ***** REDIRECTING TO LONG URL *****
+app.get('/u/:id', (req, res) => {
+  const longURL = urlDatabase[req.params.id];
+  res.redirect(longURL);
+});
+// ***
+
+// ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
 app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
   res.render('urls_show', templateVars);
 });
+// ***
 
 
+// ==============================================================================================================
+//                                         SERVER LISTENER
+// ==============================================================================================================
 
-// --> Server listener
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
+
+// ==============================================================================================================
+//                                          EXAMPLE CODE
+// ==============================================================================================================
+
+
 
 // --> EXAMPLE CODE
 
