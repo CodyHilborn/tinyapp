@@ -28,8 +28,14 @@ const generateRandomString = function() {
 };
 
 const deleteURL = function(db, key) {
+  // --> Deletes a sepcified item from database.
   delete db[key];
 };
+
+// const editLongURL = function(db, key, newValue) {
+//   const toBeEdited = db[key];
+//   toBeEdited = newValue;
+// };
 
 
 // ==============================================================================================================
@@ -38,7 +44,7 @@ const deleteURL = function(db, key) {
 
 // ***** HOME PAGE *****
 app.get('/', (req, res) => {
-  res.send('Hello!');
+  res.redirect('/urls');
 });
 // ***
 
@@ -47,23 +53,26 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
   const templateVars = { urls: urlDatabase };
+  console.log("Inside get");
   res.render('urls_index', templateVars);
 });
 
-app.post('/urls', (req, res) => {
-  // --> POST request to 
-  // --> Creating new random string, assigning it as key in urlDatabase w/ form input as value.
-  const newShortURL = generateRandomString();
-  urlDatabase[newShortURL] = req.body.longURL;
-  // --> Redirect to the urls_show page.
-  res.redirect(`/urls/${newShortURL}`);
-});
 // ***
 
 // ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
   res.render('urls_new');
+});
+// ***
+
+
+
+// ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
+app.get('/urls/:id', (req, res) => {
+  // --> Accessed by adding the short URL in place of ':id' in the browser.
+  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  res.render('urls_show', templateVars);
 });
 // ***
 
@@ -74,13 +83,25 @@ app.get('/u/:id', (req, res) => {
 });
 // ***
 
-// ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
-app.get('/urls/:id', (req, res) => {
-  // --> Accessed by adding the short URL in place of ':id' in the browser.
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
-  res.render('urls_show', templateVars);
+// ***** POST REQUEST TO CREATE NEW TINYURL *****
+app.post('/urls', (req, res) => {
+  // --> POST request to 
+  // --> Creating new random string, assigning it as key in urlDatabase w/ form input as value.
+  const newShortURL = generateRandomString();
+  urlDatabase[newShortURL] = req.body.longURL;
+  // --> Redirect to the urls_show page.
+  res.redirect(`/urls/${newShortURL}`);
 });
-// ***
+
+// ***** EDIT FORM *****
+app.post('/urls/:id', (req, res) => {
+  const newLongURL = req.body.updatedURL;
+  const urlID = req.params.id;
+
+  urlDatabase[urlID] = newLongURL;
+  res.redirect('/urls');
+});
+
 
 // ***** DELETE BUTTONS *****
 app.post('/urls/:id/delete', (req, res) => {
