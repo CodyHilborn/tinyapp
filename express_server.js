@@ -27,9 +27,13 @@ const generateRandomString = function() {
   return Math.random().toString(36).slice(2, 8);
 };
 
+const deleteURL = function(db, key) {
+  delete db[key];
+};
+
 
 // ==============================================================================================================
-//                                      GET & POST REQUEST HANDLERS
+//                                     ROUTING & REQUEST HANDLERS
 // ==============================================================================================================
 
 // ***** HOME PAGE *****
@@ -78,6 +82,16 @@ app.get('/urls/:id', (req, res) => {
 });
 // ***
 
+// ***** DELETE BUTTONS *****
+app.post('/urls/:id/delete', (req, res) => {
+  //  --> Make helper function to execute deletion.
+  //  --> Delete selected URL from urlDatabase, redirect to /urls page.
+  const urlID = req.params.id;
+
+  deleteURL(urlDatabase, urlID);
+  res.redirect('/urls');
+});
+// ***
 
 // ==============================================================================================================
 //                                         SERVER LISTENER
