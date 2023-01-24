@@ -21,7 +21,13 @@
           </a>
         </p>
       </div>
-      <div class="card-footer text-muted"></div>
+      <div class="card-footer text-muted">
+        <h5 class="card-title">Edit</h5>
+        <form class="form-inline" action="/urls/<%= id %>" method="POST">
+          <input class="form-control" type="text" name="updatedURL" placeholder="Update URL Here" />
+          <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+      </div>
     </div>
 
     <!-- Bootstrap JS -->
