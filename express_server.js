@@ -100,6 +100,11 @@ app.post('/login', (req, res) => {
 });
 // ***
 
+app.post('/logout', (req, res) => {
+  res.clearCookie('username');
+  res.redirect('/urls');
+});
+
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
   // --> POST request to 
