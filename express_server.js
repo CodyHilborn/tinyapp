@@ -2,6 +2,7 @@
 //                                      INITIAL SERVER & MIDDLEWARE SETUP
 // ==============================================================================================================
 const express = require('express');
+const cookieParser = require('cookie-parser');
 const app = express();
 const PORT = 8080;
 
@@ -12,6 +13,8 @@ app.set('view engine', 'ejs');
 // --> Middleware code to parse the body for POST requests.
 app.use(express.urlencoded({ extended: true }));
 
+// --> Cookie Parser middleware
+app.use(cookieParser());
 // ==============================================================================================================
 //                                       VARIABLES AND FUNCTIONS
 // ==============================================================================================================
@@ -52,7 +55,7 @@ app.get('/', (req, res) => {
 // ***** MyURL'S PAGE *****
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
-  const templateVars = { urls: urlDatabase };
+  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
   res.render('urls_index', templateVars);
 });
 
@@ -61,7 +64,8 @@ app.get('/urls', (req, res) => {
 // ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
-  res.render('urls_new');
+  const templateVars = { username: req.cookies["username"] };
+  res.render('urls_new', templateVars);
 });
 // ***
 
@@ -69,7 +73,11 @@ app.get('/urls/new', (req, res) => {
 // ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
 app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
-  const templateVars = { id: req.params.id, longURL: urlDatabase[req.params.id] };
+  const templateVars = {
+    id: req.params.id,
+    longURL: urlDatabase[req.params.id],
+    username: req.cookies["username"]
+  };
   res.render('urls_show', templateVars);
 });
 // ***
