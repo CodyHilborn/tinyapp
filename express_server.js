@@ -66,6 +66,7 @@ app.get('/register', (req, res) => {
 });
 // ***
 
+// ***** REGISTRATION FORM POST REQUEST *****
 app.post('/register', (req, res) => {
   // --> Handles register post request to add new user to usersDB.
   const newID = generateRandomString();
@@ -78,12 +79,17 @@ app.post('/register', (req, res) => {
   console.log(users);
   res.redirect('/urls');
 });
+// ***
 
 
 // ***** MyURL'S PAGE *****
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
-  const templateVars = { urls: urlDatabase, username: req.cookies["username"] };
+  const templateVars = {
+    urls: urlDatabase,
+    username: users[req.cookies['user_id']]
+  };
+
   res.render('urls_index', templateVars);
 });
 
@@ -92,7 +98,9 @@ app.get('/urls', (req, res) => {
 // ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
-  const templateVars = { username: req.cookies["username"] };
+  const templateVars = {
+    username: users[req.cookies['user_id']]
+  };
   res.render('urls_new', templateVars);
 });
 // ***
@@ -111,7 +119,7 @@ app.get('/urls/:id', (req, res) => {
   const templateVars = {
     id: ID,
     longURL: urlDatabase[ID],
-    username: req.cookies["username"]
+    username: users[req.cookies['user_id']]
   };
   res.render('urls_show', templateVars);
 });
@@ -136,7 +144,6 @@ app.get('/u/:id', (req, res) => {
 // ***** POST REQUEST FOR USER LOGIN (HEADER) *****
 app.post('/login', (req, res) => {
   // --> Sets a cookie named username w/ value of name typed into the form input.
-  console.log(req.body.username);
   res.cookie('username', req.body.username);
   res.redirect('/urls');
 });

@@ -12,14 +12,14 @@ const fetchValueById = function(db, id) {
   return db[id];
 };
 
-const addUserToDB = function(userDb, newID, newEmail, newPassword) {
+const addUserToDB = function(userDB, newID, newEmail, newPassword) {
   const id = newID;
   const email = newEmail;
   const password = newPassword;
 
   const newUser = { id, email, password };
 
-  userDb[id] = newUser;
+  userDB[id] = newUser;
 };
 
 module.exports = { generateRandomString, deleteFromDB, fetchValueById, addUserToDB };
