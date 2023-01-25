@@ -2,8 +2,11 @@
 //                                      INITIAL SERVER & MIDDLEWARE SETUP
 // ==============================================================================================================
 const express = require('express');
+const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+
 const { generateRandomString, deleteURL, fetchURLbyId } = require('./helperFunctions');
+
 const app = express();
 const PORT = 8080;
 
@@ -13,6 +16,9 @@ app.set('view engine', 'ejs');
 
 // --> Middleware code to parse the body for POST requests.
 app.use(express.urlencoded({ extended: true }));
+
+// Morgan middleware for logging to console.
+app.use(morgan('dev'));
 
 // --> Cookie Parser middleware
 app.use(cookieParser());
@@ -39,6 +45,11 @@ app.get('/', (req, res) => {
   res.redirect('/urls');
 });
 // ***
+
+// ***** REGISTRATION PAGE ***** 
+app.get('/register', (req, res) => {
+  res.render('register');
+});
 
 
 // ***** MyURL'S PAGE *****
