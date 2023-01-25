@@ -68,11 +68,15 @@ app.get('/register', (req, res) => {
 
 app.post('/register', (req, res) => {
   // --> Handles register post request to add new user to usersDB.
+  const newID = generateRandomString();
   const newEmail = req.body.email;
   const newPassword = req.body.password;
 
-  addUserToDB(users, newEmail, newPassword);
+  addUserToDB(users, newID, newEmail, newPassword);
+
+  res.cookie('user_id', newID);
   console.log(users);
+  res.redirect('/urls');
 });
 
 

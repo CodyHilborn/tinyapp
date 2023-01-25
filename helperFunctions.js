@@ -12,8 +12,8 @@ const fetchValueById = function(db, id) {
   return db[id];
 };
 
-const addUserToDB = function(userDb, newEmail, newPassword) {
-  const id = generateRandomString();
+const addUserToDB = function(userDb, newID, newEmail, newPassword) {
+  const id = newID;
   const email = newEmail;
   const password = newPassword;
 
