@@ -79,6 +79,12 @@ app.get('/urls/:id', (req, res) => {
 // ***** REDIRECTING TO LONG URL *****
 app.get('/u/:id', (req, res) => {
   const ID = req.params.id;
+
+  if (!fetchURLbyId(urlDatabase, ID)) {
+    res.sendStatus(404);
+  }
+
+  //  --> Redirects user to the full webpage corresponding with the ID
   const longURL = urlDatabase[ID];
   res.redirect(longURL);
 });
