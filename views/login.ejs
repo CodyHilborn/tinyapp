@@ -13,24 +13,20 @@
 
 <body>
 
-  <header>
-    <nav class="navbar navbar-expand-md navbar-dark bg-success">
-      <a class="navbar-brand" href="/login">TinyApp</a>
-    </nav>
-  </header>
+  <%- include('partials/_header') %>
 
-  <main style="margin: 1em;">
-    <h3>Log In to TinyApp</h3>
-    <form action="/login" method="POST">
-      <div class="form-group mb-2">
-        <label for="email">Email:</label>
-        <input class="form-control" type="email" name="email" placeholder="Type email address here"
-          style="width: 300px; margin: 1em" />
-        <label for="password">Password:</label>
-        <input class="form-control" type="password" name="password" placeholder="Type password here"
-          style="width: 300px; margin: 1em" />
-        <button type="submit" class="btn btn-primary">Press Here To Log In!</button>
-      </div>
-    </form>
-  </main>
+    <main style="margin: 1em;">
+      <h3>Log In to TinyApp</h3>
+      <form action="/login" method="POST">
+        <div class="form-group mb-2">
+          <label for="email">Email:</label>
+          <input class="form-control" type="email" name="email" placeholder="Type email address here"
+            style="width: 300px; margin: 1em" />
+          <label for="password">Password:</label>
+          <input class="form-control" type="password" name="password" placeholder="Type password here"
+            style="width: 300px; margin: 1em" />
+          <button type="submit" class="btn btn-primary">Press Here To Log In!</button>
+        </div>
+      </form>
+    </main>
 </body>
