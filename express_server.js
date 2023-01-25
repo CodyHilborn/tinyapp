@@ -3,6 +3,7 @@
 // ==============================================================================================================
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const { generateRandomString, deleteURL, fetchURLbyId } = require('./helperFunctions');
 const app = express();
 const PORT = 8080;
 
@@ -15,8 +16,10 @@ app.use(express.urlencoded({ extended: true }));
 
 // --> Cookie Parser middleware
 app.use(cookieParser());
+
+
 // ==============================================================================================================
-//                                       VARIABLES AND FUNCTIONS
+//                                          URL DATABASE
 // ==============================================================================================================
 
 
@@ -25,20 +28,6 @@ const urlDatabase = {
   '9sm5xK': 'http://www.google.com',
 };
 
-const generateRandomString = function() {
-  //--> Generates a random string of 6 alpha-numeric characters.
-  return Math.random().toString(36).slice(2, 8);
-};
-
-const deleteURL = function(db, key) {
-  // --> Deletes a sepcified item from database.
-  delete db[key];
-};
-
-// const editLongURL = function(db, key, newValue) {
-//   const toBeEdited = db[key];
-//   toBeEdited = newValue;
-// };
 
 
 // ==============================================================================================================
@@ -73,9 +62,14 @@ app.get('/urls/new', (req, res) => {
 // ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
 app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
+  // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
+  const ID = req.params.id;
+  if (!fetchURLbyId(urlDatabase, ID)) {
+    res.sendStatus(404);
+  }
   const templateVars = {
-    id: req.params.id,
-    longURL: urlDatabase[req.params.id],
+    id: ID,
+    longURL: urlDatabase[ID],
     username: req.cookies["username"]
   };
   res.render('urls_show', templateVars);
@@ -84,7 +78,8 @@ app.get('/urls/:id', (req, res) => {
 
 // ***** REDIRECTING TO LONG URL *****
 app.get('/u/:id', (req, res) => {
-  const longURL = urlDatabase[req.params.id];
+  const ID = req.params.id;
+  const longURL = urlDatabase[ID];
   res.redirect(longURL);
 });
 // ***
@@ -100,10 +95,13 @@ app.post('/login', (req, res) => {
 });
 // ***
 
+// ***** POST REQUEST FOR LOGOUT BUTTON *****
 app.post('/logout', (req, res) => {
+  // --> Clears username cookie and redirects to urls page.
   res.clearCookie('username');
   res.redirect('/urls');
 });
+// ***
 
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
@@ -119,9 +117,9 @@ app.post('/urls', (req, res) => {
 // ***** EDIT FORM *****
 app.post('/urls/:id', (req, res) => {
   const newLongURL = req.body.updatedURL;
-  const urlID = req.params.id;
-
-  urlDatabase[urlID] = newLongURL;
+  const ID = req.params.id;
+  // --> Finds key in urlDB using ID and changes the value to the input of the edit form.
+  urlDatabase[ID] = newLongURL;
   res.redirect('/urls');
 });
 // ***
@@ -130,9 +128,9 @@ app.post('/urls/:id', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   //  --> Make helper function to execute deletion.
   //  --> Delete selected URL from urlDatabase, redirect to /urls page.
-  const urlID = req.params.id;
+  const ID = req.params.id;
 
-  deleteURL(urlDatabase, urlID);
+  deleteURL(urlDatabase, ID);
   res.redirect('/urls');
 });
 // ***
