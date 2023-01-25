@@ -64,9 +64,11 @@ app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
   const ID = req.params.id;
+
   if (!fetchURLbyId(urlDatabase, ID)) {
     res.sendStatus(404);
   }
+
   const templateVars = {
     id: ID,
     longURL: urlDatabase[ID],
