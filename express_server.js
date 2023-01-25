@@ -66,7 +66,7 @@ app.get('/', (req, res) => {
 // ***** REGISTRATION PAGE ***** 
 app.get('/register', (req, res) => {
   //  --> Renders the registration page.
-  res.render('register');
+  res.render('register', { user: null });
 });
 // ***
 
@@ -107,7 +107,7 @@ app.post('/register', (req, res) => {
 
 // ***** LOGIN PAGE *****
 app.get('/login', (req, res) => {
-  res.render('login');
+  res.render('login', { user: null });
 });
 
 // ***
@@ -137,7 +137,7 @@ app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
   const templateVars = {
     urls: urlDatabase,
-    username: users[req.cookies['user_id']]
+    user: users[req.cookies['user_id']]
   };
 
   res.render('urls_index', templateVars);
@@ -149,7 +149,7 @@ app.get('/urls', (req, res) => {
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
   const templateVars = {
-    username: users[req.cookies['user_id']]
+    user: users[req.cookies['user_id']]
   };
   res.render('urls_new', templateVars);
 });
@@ -169,7 +169,7 @@ app.get('/urls/:id', (req, res) => {
   const templateVars = {
     id: ID,
     longURL: urlDatabase[ID],
-    username: users[req.cookies['user_id']]
+    user: users[req.cookies['user_id']]
   };
   res.render('urls_show', templateVars);
 });
