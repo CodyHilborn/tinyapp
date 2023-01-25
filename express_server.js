@@ -5,7 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const { generateRandomString, deleteFromDB, fetchValueById } = require('./helperFunctions');
+const { generateRandomString, deleteFromDB, fetchValueById, addUserToDB } = require('./helperFunctions');
 
 const app = express();
 const PORT = 8080;
@@ -61,7 +61,18 @@ app.get('/', (req, res) => {
 
 // ***** REGISTRATION PAGE ***** 
 app.get('/register', (req, res) => {
+  //  --> Renders the registration page.
   res.render('register');
+});
+// ***
+
+app.post('/register', (req, res) => {
+  // --> Handles register post request to add new user to usersDB.
+  const newEmail = req.body.email;
+  const newPassword = req.body.password;
+
+  addUserToDB(users, newEmail, newPassword);
+  console.log(users);
 });
 
 
