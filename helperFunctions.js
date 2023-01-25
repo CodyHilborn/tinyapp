@@ -24,6 +24,4 @@ const findUserByEmail = function(userDB, email) {
 
 
 
-
-
 module.exports = { generateRandomString, deleteFromDB, fetchURLById, findUserByEmail };
