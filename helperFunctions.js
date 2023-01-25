@@ -8,18 +8,22 @@ const deleteFromDB = function(db, key) {
   delete db[key];
 };
 
-const fetchValueById = function(db, id) {
+const fetchURLById = function(db, id) {
   return db[id];
 };
 
-const addUserToDB = function(userDB, newID, newEmail, newPassword) {
-  const id = newID;
-  const email = newEmail;
-  const password = newPassword;
 
-  const newUser = { id, email, password };
-
-  userDB[id] = newUser;
+const findUserByEmail = function(userDB, email) {
+  for (const user in userDB) {
+    if (userDB[user].email === email) {
+      return userDB[user];
+    }
+  };
+  return null;
 };
 
-module.exports = { generateRandomString, deleteFromDB, fetchValueById, addUserToDB };
+
+
+
+
+module.exports = { generateRandomString, deleteFromDB, fetchURLById, findUserByEmail };

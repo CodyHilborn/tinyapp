@@ -5,7 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const { generateRandomString, deleteFromDB, fetchValueById, addUserToDB } = require('./helperFunctions');
+const { generateRandomString, deleteFromDB, fetchURLById, findUserByEmail } = require('./helperFunctions');
 
 const app = express();
 const PORT = 8080;
@@ -69,13 +69,29 @@ app.get('/register', (req, res) => {
 // ***** REGISTRATION FORM POST REQUEST *****
 app.post('/register', (req, res) => {
   // --> Handles register post request to add new user to usersDB.
-  const newID = generateRandomString();
+  const newUserID = generateRandomString();
   const newEmail = req.body.email;
   const newPassword = req.body.password;
+  const foundUser = findUserByEmail(users, newEmail);
 
-  addUserToDB(users, newID, newEmail, newPassword);
+  //  --> Checks if email or password field was left empty, returns error if so.
+  if (newEmail === '' || newPassword === '') {
+    return res.status(400).send("Email or Password field empty!");
+  }
 
-  res.cookie('user_id', newID);
+  // --> Checks if email has already been registered to a user.
+  if (foundUser) {
+    return res.status(400).send(`Status Code ${res.statusCode}: ${newEmail} has already been registered. Try again!`);
+  }
+
+  // --> If no errors, adds user to DB and logs in.
+  users[newUserID] = {
+    id: newUserID,
+    email: newEmail,
+    password: newPassword,
+  };
+
+  res.cookie('user_id', newUserID);
   console.log(users);
   res.redirect('/urls');
 });
@@ -112,7 +128,7 @@ app.get('/urls/:id', (req, res) => {
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
   const ID = req.params.id;
 
-  if (!fetchValueById(urlDatabase, ID)) {
+  if (!fetchURLById(urlDatabase, ID)) {
     res.sendStatus(404);
   }
 
@@ -129,7 +145,7 @@ app.get('/urls/:id', (req, res) => {
 app.get('/u/:id', (req, res) => {
   const ID = req.params.id;
 
-  if (!fetchValueById(urlDatabase, ID)) {
+  if (!fetchURLById(urlDatabase, ID)) {
     res.sendStatus(404);
   }
 
