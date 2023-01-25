@@ -52,12 +52,16 @@ const users = {
 // ==============================================================================================================
 //                                     ROUTING & REQUEST HANDLERS
 // ==============================================================================================================
+/////////// HOME //////////////////////////////////////////////////////////////////////////////////
 
 // ***** HOME PAGE *****
 app.get('/', (req, res) => {
   res.redirect('/urls');
 });
 // ***
+
+////////// REGISTER //////////////////////////////////////////////////////////////////////////////////////
+
 
 // ***** REGISTRATION PAGE ***** 
 app.get('/register', (req, res) => {
@@ -66,9 +70,12 @@ app.get('/register', (req, res) => {
 });
 // ***
 
+
 // ***** REGISTRATION FORM POST REQUEST *****
 app.post('/register', (req, res) => {
+
   // --> Handles register post request to add new user to usersDB.
+
   const newUserID = generateRandomString();
   const newEmail = req.body.email;
   const newPassword = req.body.password;
@@ -95,6 +102,34 @@ app.post('/register', (req, res) => {
   res.redirect('/urls');
 });
 // ***
+
+////////// LOGIN ////////////////////////////////////////////////////////////////////////////////////////
+
+// ***** LOGIN PAGE *****
+app.get('/login', (req, res) => {
+  res.render('login');
+});
+
+// ***
+
+
+// ***** POST REQUEST FOR USER LOGIN (HEADER) *****
+app.post('/login', (req, res) => {
+  // --> Sets a cookie named username w/ value of name typed into the form input.
+  res.cookie('username', req.body.username);
+  res.redirect('/urls');
+});
+// ***
+
+// ***** POST REQUEST FOR LOGOUT BUTTON (HEADER) *****
+app.post('/logout', (req, res) => {
+  // --> Clears username cookie and redirects to urls page.
+  res.clearCookie('username');
+  res.redirect('/urls');
+});
+// ***
+
+////// URL PAGES /////////////////////////////////////////////////////////////////////////////////////////
 
 
 // ***** MyURL'S PAGE *****
@@ -140,6 +175,7 @@ app.get('/urls/:id', (req, res) => {
 });
 // ***
 
+
 // ***** REDIRECTING TO LONG URL *****
 app.get('/u/:id', (req, res) => {
   const ID = req.params.id;
@@ -155,23 +191,6 @@ app.get('/u/:id', (req, res) => {
 // ***
 
 
-
-// ***** POST REQUEST FOR USER LOGIN (HEADER) *****
-app.post('/login', (req, res) => {
-  // --> Sets a cookie named username w/ value of name typed into the form input.
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
-});
-// ***
-
-// ***** POST REQUEST FOR LOGOUT BUTTON *****
-app.post('/logout', (req, res) => {
-  // --> Clears username cookie and redirects to urls page.
-  res.clearCookie('username');
-  res.redirect('/urls');
-});
-// ***
-
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
   // --> POST request to 
@@ -183,6 +202,7 @@ app.post('/urls', (req, res) => {
 });
 // ***
 
+
 // ***** EDIT FORM *****
 app.post('/urls/:id', (req, res) => {
   const newLongURL = req.body.updatedURL;
@@ -192,6 +212,7 @@ app.post('/urls/:id', (req, res) => {
   res.redirect('/urls');
 });
 // ***
+
 
 // ***** DELETE BUTTONS *****
 app.post('/urls/:id/delete', (req, res) => {
@@ -203,6 +224,7 @@ app.post('/urls/:id/delete', (req, res) => {
   res.redirect('/urls');
 });
 // ***
+
 
 // ==============================================================================================================
 //                                         SERVER LISTENER
