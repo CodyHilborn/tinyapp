@@ -11,16 +11,16 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
       </div>
     </div>
-    <% if (!username.email) { %>
+    <% if (!user) { %>
       <div>
-        <form action="/login" method="post">
-          <input type="text" name="username" placeholder="Type Username Here">
-          <button type="submit" class="btn btn-outline-dark">Login</button>
-        </form>
+        Already a TinyApp User? <a href="/login">Log In Here!</a>
+      </div>
+      <div>
+        New to TinyApp? <a href="/register">Register Here!</a>
       </div>
       <% } else { %>
         <div>
-          Logged in as: <%= username.email %> &nbsp;
+          Logged in as: <%= user.email %> &nbsp;
         </div>
         <div>
           <form action="/logout" method="post">
