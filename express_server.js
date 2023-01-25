@@ -76,7 +76,7 @@ app.post('/register', (req, res) => {
 
   //  --> Checks if email or password field was left empty, returns error if so.
   if (newEmail === '' || newPassword === '') {
-    return res.status(400).send("Email or Password field empty!");
+    return res.status(400).send(`Status Code ${res.statusCode}: Email or Password field empty!`);
   }
 
   // --> Checks if email has already been registered to a user.
@@ -92,7 +92,6 @@ app.post('/register', (req, res) => {
   };
 
   res.cookie('user_id', newUserID);
-  console.log(users);
   res.redirect('/urls');
 });
 // ***
