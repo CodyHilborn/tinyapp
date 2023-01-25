@@ -53,7 +53,6 @@ app.get('/', (req, res) => {
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
   const templateVars = { urls: urlDatabase };
-  console.log("Inside get");
   res.render('urls_index', templateVars);
 });
 
@@ -65,7 +64,6 @@ app.get('/urls/new', (req, res) => {
   res.render('urls_new');
 });
 // ***
-
 
 
 // ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
@@ -83,6 +81,17 @@ app.get('/u/:id', (req, res) => {
 });
 // ***
 
+
+
+// ***** POST REQUEST FOR USER LOGIN (HEADER) *****
+app.post('/login', (req, res) => {
+  // --> Sets a cookie named username w/ value of name typed into the form input.
+  console.log(req.body.username);
+  res.cookie('username', req.body.username);
+  res.redirect('/urls');
+});
+// ***
+
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
   // --> POST request to 
@@ -92,6 +101,7 @@ app.post('/urls', (req, res) => {
   // --> Redirect to the urls_show page.
   res.redirect(`/urls/${newShortURL}`);
 });
+// ***
 
 // ***** EDIT FORM *****
 app.post('/urls/:id', (req, res) => {
@@ -101,7 +111,7 @@ app.post('/urls/:id', (req, res) => {
   urlDatabase[urlID] = newLongURL;
   res.redirect('/urls');
 });
-
+// ***
 
 // ***** DELETE BUTTONS *****
 app.post('/urls/:id/delete', (req, res) => {
