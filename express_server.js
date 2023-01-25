@@ -5,7 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const { generateRandomString, deleteURL, fetchURLbyId } = require('./helperFunctions');
+const { generateRandomString, deleteFromDB, fetchValueById } = require('./helperFunctions');
 
 const app = express();
 const PORT = 8080;
@@ -25,13 +25,26 @@ app.use(cookieParser());
 
 
 // ==============================================================================================================
-//                                          URL DATABASE
+//                                        USER & URL DATABASES
 // ==============================================================================================================
 
 
 const urlDatabase = {
   'b2xVn2': 'http://www.lighthouselabs.ca',
   '9sm5xK': 'http://www.google.com',
+};
+
+const users = {
+  id1: {
+    id: 'id1',
+    email: 'user@example.com',
+    password: 'purple-monkey-dinosaur'
+  },
+  id2: {
+    id: 'id2',
+    email: 'user2@example.com',
+    password: 'dishwasher-funk'
+  }
 };
 
 
@@ -76,7 +89,7 @@ app.get('/urls/:id', (req, res) => {
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
   const ID = req.params.id;
 
-  if (!fetchURLbyId(urlDatabase, ID)) {
+  if (!fetchValueById(urlDatabase, ID)) {
     res.sendStatus(404);
   }
 
@@ -93,7 +106,7 @@ app.get('/urls/:id', (req, res) => {
 app.get('/u/:id', (req, res) => {
   const ID = req.params.id;
 
-  if (!fetchURLbyId(urlDatabase, ID)) {
+  if (!fetchValueById(urlDatabase, ID)) {
     res.sendStatus(404);
   }
 
@@ -149,7 +162,7 @@ app.post('/urls/:id/delete', (req, res) => {
   //  --> Delete selected URL from urlDatabase, redirect to /urls page.
   const ID = req.params.id;
 
-  deleteURL(urlDatabase, ID);
+  deleteFromDB(urlDatabase, ID);
   res.redirect('/urls');
 });
 // ***

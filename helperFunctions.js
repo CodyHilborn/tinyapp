@@ -3,13 +3,13 @@ const generateRandomString = function() {
   return Math.random().toString(36).slice(2, 8);
 };
 
-const deleteURL = function(db, key) {
+const deleteFromDB = function(db, key) {
   // --> Deletes a sepcified item from database.
   delete db[key];
 };
 
-const fetchURLbyId = function(db, id) {
+const fetchValueById = function(db, id) {
   return db[id];
 };
 
-module.exports = { generateRandomString, deleteURL, fetchURLbyId };
+module.exports = { generateRandomString, deleteFromDB, fetchValueById };
