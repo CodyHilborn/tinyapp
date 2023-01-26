@@ -4,6 +4,8 @@
 const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
+const bcrypt = require('bcryptjs');
+const salt = bcrypt.genSaltSync(10);
 
 const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
 
@@ -99,6 +101,10 @@ app.post('/register', (req, res) => {
   const newUserID = generateRandomString();
   const newEmail = req.body.email;
   const newPassword = req.body.password;
+
+  // --> Take new password and hash it.
+  const hashedPassword = bcrypt.hashSync(newPassword, salt);
+
   const foundUser = findUserByEmail(users, newEmail);
 
   //  --> Checks if email or password field was left empty, returns error if so.
@@ -115,7 +121,7 @@ app.post('/register', (req, res) => {
   users[newUserID] = {
     id: newUserID,
     email: newEmail,
-    password: newPassword,
+    password: hashedPassword,
   };
 
   res.cookie('user_id', newUserID);
