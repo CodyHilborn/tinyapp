@@ -14,7 +14,7 @@ const findUserByEmail = function(userDB, email) {
     if (userDB[user].email === email) {
       return userDB[user];
     }
-  };
+  }
   return null;
 };
 

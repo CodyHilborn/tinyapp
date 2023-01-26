@@ -79,7 +79,7 @@ app.get('/', (req, res) => {
 ////////// REGISTER //////////////////////////////////////////////////////////////////////////////////////
 
 
-// ***** REGISTRATION PAGE ***** 
+// ***** REGISTRATION PAGE *****
 app.get('/register', (req, res) => {
 
   // Assign value of user to appropriate object in userDB.
@@ -89,7 +89,7 @@ app.get('/register', (req, res) => {
     user: users[userID]
   };
 
-  // --> If user is NOT already registered, render the register page. 
+  // --> If user is NOT already registered, render the register page.
   if (!userID) {
     res.render('register', templateVars);
   } else {
@@ -149,7 +149,7 @@ app.get('/login', (req, res) => {
     user: users[userID]
   };
 
-  // --> If user is NOT already logged in, render login page. 
+  // --> If user is NOT already logged in, render login page.
   if (!userID) {
     res.render('login', templateVars);
   } else {
@@ -203,7 +203,7 @@ app.post('/logout', (req, res) => {
 
 // ***** MyURL'S PAGE *****
 app.get('/urls', (req, res) => {
-  // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
+  // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs
 
   const userID = req.session.user_id;
 
@@ -243,7 +243,7 @@ app.get('/urls/new', (req, res) => {
 // ***
 
 
-// ***** SHOW NEW TINY-URL PAGE W/ LINK ***** 
+// ***** SHOW NEW TINY-URL PAGE W/ LINK *****
 app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
@@ -300,7 +300,6 @@ app.post('/urls', (req, res) => {
     return res.send("Only registered users are allowed to create short URL's. Please sign up and try again.\n");
   }
 
-  // --> POST request to 
   // --> Creating new random string, assigning it as key in urlDatabase w/ form input as value.
   const newShortURL = generateRandomString();
   urlDatabase[newShortURL] = {
