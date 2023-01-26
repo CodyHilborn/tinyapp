@@ -1,13 +1,13 @@
 // ==============================================================================================================
-//                                      INITIAL SERVER & MIDDLEWARE SETUP
+//                                  INITIAL SERVER, IMPORTS & MIDDLEWARE CONFIG
 // ==============================================================================================================
 const express = require('express');
 const morgan = require('morgan');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
-const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
 
 const app = express();
 const PORT = 8080;
@@ -23,8 +23,14 @@ app.use(express.urlencoded({ extended: true }));
 app.use(morgan('dev'));
 
 // --> Cookie Parser middleware
-app.use(cookieParser());
+// app.use(cookieParser());
+app.use(cookieSession({
+  name: 'session',
+  keys: ['the-arsonist-has-oddly-shaped-feet'],
+}));
 
+
+const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
 
 // ==============================================================================================================
 //                                        USER & URL DATABASES
