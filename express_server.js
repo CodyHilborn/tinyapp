@@ -26,7 +26,8 @@ app.use(cookieSession({
   name: 'session',
   keys: [
     'the arsonist has oddly shaped feet',
-    'the human torch was denied a bank loan']
+    'the human torch was denied a bank loan'
+  ]
 }));
 
 
@@ -360,22 +361,12 @@ app.post('/urls/:id/delete', (req, res) => {
 //                                         SERVER LISTENER
 // ==============================================================================================================
 
+
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
 });
 
+
 // ==============================================================================================================
-//                                          EXAMPLE CODE
+//                                             THE END!
 // ==============================================================================================================
-
-
-
-// --> EXAMPLE CODE
-
-// app.get('/urls.json', (req, res) => {
-//   res.json(urlDatabase);
-// });
-
-// app.get('/hello', (req, res) => {
-//   res.send('<html><body>Hello <b>World</b></body></html>\n');
-// });
