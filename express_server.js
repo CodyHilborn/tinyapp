@@ -74,14 +74,14 @@ app.get('/', (req, res) => {
 app.get('/register', (req, res) => {
 
   // Assign value of user to appropriate object in userDB.
-  const user = users[req.cookies['user_id']];
+  const userID = req.cookies.user_id;
 
   const templateVars = {
-    user
+    user: users[userID]
   };
 
   // --> If user is NOT already registered, render the register page. 
-  if (!user) {
+  if (!userID) {
     res.render('register', templateVars);
   } else {
     // --> If user IS already registered, redirect to urls page.
@@ -130,14 +130,14 @@ app.post('/register', (req, res) => {
 app.get('/login', (req, res) => {
 
   // Assign value of user to appropriate object in userDB.
-  const user = users[req.cookies['user_id']];
+  const userID = req.cookies.user_id;
 
   const templateVars = {
-    user
+    user: users[userID]
   };
 
   // --> If user is NOT already logged in, render login page. 
-  if (!user) {
+  if (!userID) {
     res.render('login', templateVars);
   } else {
     // --> If user IS already logged in, redirect to urls.
@@ -170,7 +170,7 @@ app.post('/login', (req, res) => {
 
     // email and password match? Set cookie to existing users ID and redirect.
     res.cookie('user_id', foundUser.id);
-    res.redirect('/urls');
+    return res.redirect('/urls');
   }
 
 });
@@ -191,18 +191,17 @@ app.post('/logout', (req, res) => {
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
 
-  const user = users[req.cookies['user_id']];
+  const userID = req.cookies.user_id;
 
-  const urls = urlsForUser(urlDatabase, user);
+  const urls = urlsForUser(urlDatabase, userID);
 
   const templateVars = {
-    user,
-    urls
+    urls,
+    user: users[userID]
   };
-  console.log(urls, user);
 
   // --> If user isn't logged in, send error message.
-  if (!user) {
+  if (!userID) {
     return res.status(403).send(`Status Code ${res.statusCode}: Please sign in if you wish to view this page.`);
   } else {
     res.render('urls_index', templateVars);
@@ -215,13 +214,13 @@ app.get('/urls', (req, res) => {
 // ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
-  const user = users[req.cookies['user_id']];
+  const userID = req.cookies.user_id;
 
   const templateVars = {
-    user
+    user: users[userID]
   };
 
-  if (!user) {
+  if (!userID) {
     res.redirect('/login');
   } else {
     res.render('urls_new', templateVars);
@@ -235,20 +234,27 @@ app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
 
+  const userID = req.cookies.user_id;
   const urlID = req.params.id;
-  // const longURL = urlDatabase[urlID].longURL;
-
-  if (!urlDatabase[urlID]) {
-    res.status(404).send(`Status Code ${res.statusCode}: Short URL not found!`);
-  }
-
   const templateVars = {
     id: urlID,
+    user: users[userID],
     longURL: urlDatabase[urlID].longURL,
-    user: users[req.cookies['user_id']]
   };
 
-  res.render('urls_show', templateVars);
+  if (!urlDatabase[urlID]) {
+    return res.status(404).send(`Status Code ${res.statusCode}: Short URL not found!`);
+  }
+
+  if (!userID) {
+    return res.status(403).send(`Status Code ${res.statusCode}: Please sign in if you wish to view this page.`);
+  }
+
+  if (userID !== urlDatabase[urlID].userID) {
+    return res.status(403).send(`Status Code ${res.statusCode}: These aren't the URL's you're looking for, move along.`);
+  }
+
+  return res.render('urls_show', templateVars);
 
 });
 // ***
@@ -273,9 +279,9 @@ app.get('/u/:id', (req, res) => {
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
 
-  const user = users[req.cookies['user_id']];
+  const userID = req.cookies.user_id;
 
-  if (!user) {
+  if (!userID) {
     return res.send("Only registered users are allowed to create short URL's. Please sign up and try again.\n");
   }
 
@@ -284,7 +290,7 @@ app.post('/urls', (req, res) => {
   const newShortURL = generateRandomString();
   urlDatabase[newShortURL] = {
     longURL: req.body.longURL,
-    userID: null
+    userID: userID
   };
   // --> Redirect to the urls_show page.
   res.redirect(`/urls/${newShortURL}`);
