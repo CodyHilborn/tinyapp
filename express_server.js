@@ -215,32 +215,36 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
-  const ID = req.params.id;
+  const urlID = req.params.id;
+  const foundURL = fetchURLById(urlDatabase, urlID);
 
-  if (!fetchURLById(urlDatabase, ID)) {
-    res.sendStatus(404);
+  if (!foundURL) {
+    res.status(404).send(`Status Code ${res.statusCode}: Short URL not found!`);
   }
 
   const templateVars = {
-    id: ID,
-    longURL: urlDatabase[ID],
+    id: urlID,
+    longURL: urlDatabase[urlID],
     user: users[req.cookies['user_id']]
   };
+
   res.render('urls_show', templateVars);
+
 });
 // ***
 
 
 // ***** REDIRECTING TO LONG URL *****
 app.get('/u/:id', (req, res) => {
-  const ID = req.params.id;
+  const urlID = req.params.id;
+  const foundURL = fetchURLById(urlDatabase, urlID);
 
-  if (!fetchURLById(urlDatabase, ID)) {
-    res.sendStatus(404);
+  if (!foundURL) {
+    res.status(404).send(`Status Code ${res.statusCode}: Short URL doesn't yet exist!`);
   }
 
   //  --> Redirects user to the full webpage corresponding with the ID
-  const longURL = urlDatabase[ID];
+  const longURL = urlDatabase[urlID];
   res.redirect(longURL);
 });
 // ***
@@ -248,6 +252,13 @@ app.get('/u/:id', (req, res) => {
 
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
+
+  const user = users[req.cookies['user_id']];
+
+  if (!user) {
+    return res.send("Only registered users are allowed to create short URL's. Please sign up and try again.\n");
+  }
+
   // --> POST request to 
   // --> Creating new random string, assigning it as key in urlDatabase w/ form input as value.
   const newShortURL = generateRandomString();
