@@ -13,6 +13,7 @@ const PORT = 8080;
 app.set('view engine', 'ejs');
 
 const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
+const { urlDatabase, users } = require('./database/database.js');
 
 // ==============================================================================================================
 //                                         MIDDLEWARE CONFIG
@@ -32,36 +33,6 @@ app.use(cookieSession({
     'the human torch was denied a bank loan'
   ]
 }));
-
-// ==============================================================================================================
-//                                        USER & URL DATABASES
-// ==============================================================================================================
-
-
-const urlDatabase = {
-  'b2xVn2': {
-    longURL: 'http://www.lighthouselabs.ca',
-    userID: 'g2x5V4'
-  },
-  '9sm5xK': {
-    longURL: 'http://www.google.com',
-    userID: 'g2x5V4'
-  }
-};
-
-
-const users = {
-  'g2x5V4': {
-    id: 'g2x5V4',
-    email: 'user@example.com',
-    password: 'purple'
-  },
-  'p4V3f9': {
-    id: 'p4V3f9',
-    email: 'user2@example.com',
-    password: 'dishwasher-funk'
-  }
-};
 
 
 // ==============================================================================================================
