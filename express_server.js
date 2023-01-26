@@ -169,7 +169,6 @@ app.post('/login', (req, res) => {
   const loginPassword = req.body.password;
   const foundUser = findUserByEmail(users, loginEmail);
 
-
   // If there's no match for login email, respond w/ 403 status code
   if (!foundUser) {
     return res.status(403).send(`Status Code ${res.statusCode}: Email not yet registered!`);

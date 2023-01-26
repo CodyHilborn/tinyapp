@@ -20,7 +20,6 @@ const findUserByEmail = function(userDB, email) {
 
 const urlsForUser = function(urlDB, userID) {
   let userURLs = {};
-  // Bug In Here.
   for (const url in urlDB) {
     if (urlDB[url].userID === userID) {
       userURLs[url] = {
