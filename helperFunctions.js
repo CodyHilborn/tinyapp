@@ -1,3 +1,7 @@
+// ==============================================================================================================
+//                                       HELPER FUNCTIONS
+// ==============================================================================================================
+
 const generateRandomString = function() {
   //--> Generates a random string of 6 alpha-numeric characters.
   return Math.random().toString(36).slice(2, 8);
