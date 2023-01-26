@@ -196,10 +196,17 @@ app.get('/urls', (req, res) => {
 // ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
+  const user = users[req.cookies['user_id']];
+
   const templateVars = {
-    user: users[req.cookies['user_id']]
+    user
   };
-  res.render('urls_new', templateVars);
+
+  if (!user) {
+    res.redirect('/login');
+  } else {
+    res.render('urls_new', templateVars);
+  }
 });
 // ***
 
