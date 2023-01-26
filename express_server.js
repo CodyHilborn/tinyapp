@@ -3,7 +3,6 @@
 // ==============================================================================================================
 const express = require('express');
 const morgan = require('morgan');
-// const cookieParser = require('cookie-parser');
 const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
@@ -22,11 +21,10 @@ app.use(express.urlencoded({ extended: true }));
 // Morgan middleware for logging to console.
 app.use(morgan('dev'));
 
-// --> Cookie Parser middleware
-// app.use(cookieParser());
+// --> Cookie Session middleware
 app.use(cookieSession({
   name: 'session',
-  keys: ['the-arsonist-has-oddly-shaped-feet'],
+  secret: 'the arsonist has oddly shaped feet',
 }));
 
 
@@ -82,7 +80,7 @@ app.get('/', (req, res) => {
 app.get('/register', (req, res) => {
 
   // Assign value of user to appropriate object in userDB.
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   const templateVars = {
     user: users[userID]
@@ -130,7 +128,7 @@ app.post('/register', (req, res) => {
     password: hashedPassword,
   };
 
-  res.cookie('user_id', newUserID);
+  req.session.user_id = newUserID;
   res.redirect('/urls');
 });
 // ***
@@ -142,7 +140,7 @@ app.post('/register', (req, res) => {
 app.get('/login', (req, res) => {
 
   // Assign value of user to appropriate object in userDB.
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   const templateVars = {
     user: users[userID]
@@ -181,7 +179,7 @@ app.post('/login', (req, res) => {
   } else {
 
     // email and password match? Set cookie to existing users ID and redirect.
-    res.cookie('user_id', foundUser.id);
+    req.session.user_id = foundUser.id;
     return res.redirect('/urls');
   }
 
@@ -191,7 +189,8 @@ app.post('/login', (req, res) => {
 // ***** POST REQUEST FOR LOGOUT BUTTON *****
 app.post('/logout', (req, res) => {
   // --> Clears user_id cookie and redirects to urls page.
-  res.clearCookie('user_id');
+  res.clearCookie('session.sig');
+  res.clearCookie('session');
   res.redirect('/login');
 });
 // ***
@@ -203,7 +202,7 @@ app.post('/logout', (req, res) => {
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
 
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   const urls = urlsForUser(urlDatabase, userID);
 
@@ -226,7 +225,7 @@ app.get('/urls', (req, res) => {
 // ***** CREATE NEW URL/FORM PAGE *****
 app.get('/urls/new', (req, res) => {
   //  --> Get route for the Create TinyURL page w/ form.
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   const templateVars = {
     user: users[userID]
@@ -246,7 +245,7 @@ app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
 
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
   const urlID = req.params.id;
 
   if (!urlDatabase[urlID]) {
@@ -292,7 +291,7 @@ app.get('/u/:id', (req, res) => {
 // ***** POST REQUEST TO CREATE NEW TINYURL *****
 app.post('/urls', (req, res) => {
 
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   if (!userID) {
     return res.send("Only registered users are allowed to create short URL's. Please sign up and try again.\n");
@@ -315,7 +314,7 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id', (req, res) => {
   const newLongURL = req.body.updatedURL;
   const urlID = req.params.id;
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   // Return error message if: urlID doesn't exist, not logged in, or user doesn't own url.
 
@@ -339,7 +338,7 @@ app.post('/urls/:id/delete', (req, res) => {
   //  --> Make helper function to execute deletion.
   //  --> Delete selected URL from urlDatabase, redirect to /urls page.
   const urlID = req.params.id;
-  const userID = req.cookies.user_id;
+  const userID = req.session.user_id;
 
   if (!urlDatabase[urlID]) {
     return res.status(404).send(`Status Code ${res.statusCode}: Short URL doesn't exist!`);
