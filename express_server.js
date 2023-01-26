@@ -236,11 +236,6 @@ app.get('/urls/:id', (req, res) => {
 
   const userID = req.cookies.user_id;
   const urlID = req.params.id;
-  const templateVars = {
-    id: urlID,
-    user: users[userID],
-    longURL: urlDatabase[urlID].longURL,
-  };
 
   if (!urlDatabase[urlID]) {
     return res.status(404).send(`Status Code ${res.statusCode}: Short URL not found!`);
@@ -253,6 +248,12 @@ app.get('/urls/:id', (req, res) => {
   if (userID !== urlDatabase[urlID].userID) {
     return res.status(403).send(`Status Code ${res.statusCode}: These aren't the URL's you're looking for, move along.`);
   }
+
+  const templateVars = {
+    id: urlID,
+    user: users[userID],
+    longURL: urlDatabase[urlID].longURL,
+  };
 
   return res.render('urls_show', templateVars);
 
@@ -302,6 +303,18 @@ app.post('/urls', (req, res) => {
 app.post('/urls/:id', (req, res) => {
   const newLongURL = req.body.updatedURL;
   const urlID = req.params.id;
+  const userID = req.cookies.user_id;
+
+  // Return error message if: urlID doesn't exist, not logged in, or user doesn't own url.
+
+  if (!urlDatabase[urlID]) {
+    return res.status(404).send(`Status Code ${res.statusCode}: Short URL doesn't exist!`);
+  }
+
+  if (!userID || userID !== urlDatabase[urlID].userID) {
+    return res.status(403).send(`Status Code ${res.statusCode}: Sorry, you are not authorized to do that!`);
+  }
+
   // --> Finds key in urlDB using ID and changes the value to the input of the edit form.
   urlDatabase[urlID].longURL = newLongURL;
   res.redirect('/urls');
@@ -314,6 +327,15 @@ app.post('/urls/:id/delete', (req, res) => {
   //  --> Make helper function to execute deletion.
   //  --> Delete selected URL from urlDatabase, redirect to /urls page.
   const urlID = req.params.id;
+  const userID = req.cookies.user_id;
+
+  if (!urlDatabase[urlID]) {
+    return res.status(404).send(`Status Code ${res.statusCode}: Short URL doesn't exist!`);
+  }
+
+  if (!userID || userID !== urlDatabase[urlID].userID) {
+    return res.status(403).send(`Status Code ${res.statusCode}: Sorry, you are not authorized to do that!`);
+  }
 
   deleteFromDB(urlDatabase, urlID);
   res.redirect('/urls');
