@@ -1,5 +1,5 @@
 // ==============================================================================================================
-//                                  INITIAL SERVER, IMPORTS & MIDDLEWARE CONFIG
+//                                       IMPORTS & SERVER CONFIG
 // ==============================================================================================================
 const express = require('express');
 const morgan = require('morgan');
@@ -7,13 +7,16 @@ const cookieSession = require('cookie-session');
 const bcrypt = require('bcryptjs');
 const salt = bcrypt.genSaltSync(10);
 
-
 const app = express();
 const PORT = 8080;
 
 app.set('view engine', 'ejs');
 
+const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
 
+// ==============================================================================================================
+//                                         MIDDLEWARE CONFIG
+// ==============================================================================================================
 
 // --> Middleware code to parse the body for POST requests.
 app.use(express.urlencoded({ extended: true }));
@@ -29,9 +32,6 @@ app.use(cookieSession({
     'the human torch was denied a bank loan'
   ]
 }));
-
-
-const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
 
 // ==============================================================================================================
 //                                        USER & URL DATABASES
@@ -206,7 +206,6 @@ app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs
 
   const userID = req.session.user_id;
-
   const urls = urlsForUser(urlDatabase, userID);
 
   const templateVars = {
@@ -314,6 +313,7 @@ app.post('/urls', (req, res) => {
 
 // ***** EDIT FORM *****
 app.post('/urls/:id', (req, res) => {
+
   const newLongURL = req.body.updatedURL;
   const urlID = req.params.id;
   const userID = req.session.user_id;
