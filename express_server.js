@@ -66,12 +66,20 @@ app.get('/', (req, res) => {
 // ***** REGISTRATION PAGE ***** 
 app.get('/register', (req, res) => {
 
+  // Assign value of user to appropriate object in userDB.
+  const user = users[req.cookies['user_id']];
+
   const templateVars = {
-    user: null
+    user
   };
 
-  //  --> Renders the registration page.
-  res.render('register', templateVars);
+  // --> If user is NOT already registered, render the register page. 
+  if (!user) {
+    res.render('register', templateVars);
+  } else {
+    // --> If user IS already registered, redirect to urls page.
+    res.redirect('/urls');
+  }
 });
 // ***
 
@@ -114,11 +122,21 @@ app.post('/register', (req, res) => {
 // ***** LOGIN PAGE *****
 app.get('/login', (req, res) => {
 
+  // Assign value of user to appropriate object in userDB.
+  const user = users[req.cookies['user_id']];
+
   const templateVars = {
-    user: null
+    user
   };
 
-  res.render('login', templateVars);
+  // --> If user is NOT already logged in, render login page. 
+  if (!user) {
+    res.render('login', templateVars);
+  } else {
+    // --> If user IS already logged in, redirect to urls.
+    res.redirect('/urls');
+  }
+
 });
 
 // ***
