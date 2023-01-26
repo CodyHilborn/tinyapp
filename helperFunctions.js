@@ -22,8 +22,10 @@ const urlsForUser = function(urlDB, userID) {
   let userURLs = {};
 
   for (const url in urlDB) {
-    if (urlDB[url].userID === userID) {
-      userURLs[url] = urlDB[url];
+    if (urlDB[url].userID === userID.id) {
+      userURLs[url] = {
+        longURL: urlDB[url].longURL
+      };
     }
   }
   return userURLs;

@@ -191,13 +191,15 @@ app.post('/logout', (req, res) => {
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
 
-  const urls = urlDatabase;
   const user = users[req.cookies['user_id']];
 
+  const urls = urlsForUser(urlDatabase, user);
+
   const templateVars = {
-    urls,
-    user
+    user,
+    urls
   };
+  console.log(urls, user);
 
   // --> If user isn't logged in, send error message.
   if (!user) {
