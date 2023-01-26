@@ -18,6 +18,16 @@ const findUserByEmail = function(userDB, email) {
   return null;
 };
 
+const urlsForUser = function(urlDB, userID) {
+  let userURLs = {};
+
+  for (const url in urlDB) {
+    if (urlDB[url].userID === userID) {
+      userURLs[url] = urlDB[url];
+    }
+  }
+  return userURLs;
+};
 
 
-module.exports = { generateRandomString, deleteFromDB, findUserByEmail };
+module.exports = { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser };

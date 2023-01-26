@@ -5,7 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const { generateRandomString, deleteFromDB, findUserByEmail } = require('./helperFunctions');
+const { generateRandomString, deleteFromDB, findUserByEmail, urlsForUser } = require('./helperFunctions');
 
 const app = express();
 const PORT = 8080;
@@ -190,12 +190,22 @@ app.post('/logout', (req, res) => {
 // ***** MyURL'S PAGE *****
 app.get('/urls', (req, res) => {
   // --> Get route for MyURLs tab, showing table of previoiusly created TinyURLS and corresponding long URLs 
+
+  const urls = urlDatabase;
+  const user = users[req.cookies['user_id']];
+
   const templateVars = {
-    urls: urlDatabase,
-    user: users[req.cookies['user_id']]
+    urls,
+    user
   };
 
-  res.render('urls_index', templateVars);
+  // --> If user isn't logged in, send error message.
+  if (!user) {
+    return res.status(403).send(`Status Code ${res.statusCode}: Please sign in if you wish to view this page.`);
+  } else {
+    res.render('urls_index', templateVars);
+  }
+
 });
 
 // ***
