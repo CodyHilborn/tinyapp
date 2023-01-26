@@ -65,8 +65,13 @@ app.get('/', (req, res) => {
 
 // ***** REGISTRATION PAGE ***** 
 app.get('/register', (req, res) => {
+
+  const templateVars = {
+    user: null
+  };
+
   //  --> Renders the registration page.
-  res.render('register', { user: null });
+  res.render('register', templateVars);
 });
 // ***
 
@@ -103,11 +108,17 @@ app.post('/register', (req, res) => {
 });
 // ***
 
+
 ////////// LOGIN ////////////////////////////////////////////////////////////////////////////////////////
 
 // ***** LOGIN PAGE *****
 app.get('/login', (req, res) => {
-  res.render('login', { user: null });
+
+  const templateVars = {
+    user: null
+  };
+
+  res.render('login', templateVars);
 });
 
 // ***
@@ -115,17 +126,36 @@ app.get('/login', (req, res) => {
 
 // ***** POST REQUEST FOR USER LOGIN (HEADER) *****
 app.post('/login', (req, res) => {
-  // --> Sets a cookie named username w/ value of name typed into the form input.
-  res.cookie('username', req.body.username);
-  res.redirect('/urls');
+  const loginEmail = req.body.email;
+  const loginPassword = req.body.password;
+  const foundUser = findUserByEmail(users, loginEmail);
+  // --> Sets a cookie named user_id w/ value of name typed into the form input.
+
+
+  // If there's no match for login email, respond w/ 403 status code
+  if (!foundUser) {
+    return res.status(403).send(`Status Code ${res.statusCode}: Email not yet registered!`);
+  }
+
+  // Email match? check password match also.
+  // No password match? 403 status code and response.
+  if (foundUser.password !== loginPassword) {
+    return res.status(403).send(`Status Code ${res.statusCode}: Password is incorrect!`);
+  } else {
+
+    // email and password match? Set cookie to existing users ID and redirect.
+    res.cookie('user_id', foundUser.id);
+    res.redirect('/urls');
+  }
+
 });
 // ***
 
 // ***** POST REQUEST FOR LOGOUT BUTTON (HEADER) *****
 app.post('/logout', (req, res) => {
-  // --> Clears username cookie and redirects to urls page.
-  res.clearCookie('username');
-  res.redirect('/urls');
+  // --> Clears user_id cookie and redirects to urls page.
+  res.clearCookie('user_id');
+  res.redirect('/login');
 });
 // ***
 
