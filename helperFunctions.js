@@ -8,10 +8,6 @@ const deleteFromDB = function(db, key) {
   delete db[key];
 };
 
-const fetchURLById = function(db, id) {
-  return db[id];
-};
-
 
 const findUserByEmail = function(userDB, email) {
   for (const user in userDB) {
@@ -24,4 +20,4 @@ const findUserByEmail = function(userDB, email) {
 
 
 
-module.exports = { generateRandomString, deleteFromDB, fetchURLById, findUserByEmail };
+module.exports = { generateRandomString, deleteFromDB, findUserByEmail };
