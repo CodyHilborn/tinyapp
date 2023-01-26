@@ -35,13 +35,13 @@ const urlDatabase = {
 };
 
 const users = {
-  id1: {
-    id: 'id1',
+  'g2x5V4': {
+    id: 'g2x5V4',
     email: 'user@example.com',
-    password: 'purple-monkey-dinosaur'
+    password: 'purple'
   },
-  id2: {
-    id: 'id2',
+  'p4V3f9': {
+    id: 'p4V3f9',
     email: 'user2@example.com',
     password: 'dishwasher-funk'
   }
@@ -142,7 +142,7 @@ app.get('/login', (req, res) => {
 // ***
 
 
-// ***** POST REQUEST FOR USER LOGIN (HEADER) *****
+// ***** POST REQUEST FOR USER LOGIN *****
 app.post('/login', (req, res) => {
   const loginEmail = req.body.email;
   const loginPassword = req.body.password;
@@ -169,7 +169,7 @@ app.post('/login', (req, res) => {
 });
 // ***
 
-// ***** POST REQUEST FOR LOGOUT BUTTON (HEADER) *****
+// ***** POST REQUEST FOR LOGOUT BUTTON *****
 app.post('/logout', (req, res) => {
   // --> Clears user_id cookie and redirects to urls page.
   res.clearCookie('user_id');
@@ -272,9 +272,9 @@ app.post('/urls', (req, res) => {
 // ***** EDIT FORM *****
 app.post('/urls/:id', (req, res) => {
   const newLongURL = req.body.updatedURL;
-  const ID = req.params.id;
+  const urlID = req.params.id;
   // --> Finds key in urlDB using ID and changes the value to the input of the edit form.
-  urlDatabase[ID] = newLongURL;
+  urlDatabase[urlID] = newLongURL;
   res.redirect('/urls');
 });
 // ***
@@ -284,9 +284,9 @@ app.post('/urls/:id', (req, res) => {
 app.post('/urls/:id/delete', (req, res) => {
   //  --> Make helper function to execute deletion.
   //  --> Delete selected URL from urlDatabase, redirect to /urls page.
-  const ID = req.params.id;
+  const urlID = req.params.id;
 
-  deleteFromDB(urlDatabase, ID);
+  deleteFromDB(urlDatabase, urlID);
   res.redirect('/urls');
 });
 // ***
