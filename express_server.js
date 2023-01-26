@@ -24,7 +24,9 @@ app.use(morgan('dev'));
 // --> Cookie Session middleware
 app.use(cookieSession({
   name: 'session',
-  secret: 'the arsonist has oddly shaped feet',
+  keys: [
+    'the arsonist has oddly shaped feet',
+    'the human torch was denied a bank loan']
 }));
 
 
