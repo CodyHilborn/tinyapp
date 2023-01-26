@@ -5,7 +5,7 @@ const express = require('express');
 const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 
-const { generateRandomString, deleteFromDB, fetchURLById, findUserByEmail } = require('./helperFunctions');
+const { generateRandomString, deleteFromDB, findUserByEmail } = require('./helperFunctions');
 
 const app = express();
 const PORT = 8080;
@@ -222,16 +222,17 @@ app.get('/urls/new', (req, res) => {
 app.get('/urls/:id', (req, res) => {
   // --> Accessed by adding the short URL in place of ':id' in the browser.
   // --> Sends Status Code 404 if ID doesn't match any found in urlDB.
-  const urlID = req.params.id;
-  const foundURL = fetchURLById(urlDatabase, urlID);
 
-  if (!foundURL) {
+  const urlID = req.params.id;
+  // const longURL = urlDatabase[urlID].longURL;
+
+  if (!urlDatabase[urlID]) {
     res.status(404).send(`Status Code ${res.statusCode}: Short URL not found!`);
   }
 
   const templateVars = {
     id: urlID,
-    longURL: urlDatabase[urlID],
+    longURL: urlDatabase[urlID].longURL,
     user: users[req.cookies['user_id']]
   };
 
@@ -244,14 +245,14 @@ app.get('/urls/:id', (req, res) => {
 // ***** REDIRECTING TO LONG URL *****
 app.get('/u/:id', (req, res) => {
   const urlID = req.params.id;
-  const foundURL = fetchURLById(urlDatabase, urlID);
+  // const foundURL = fetchURLById(urlDatabase, urlID);
 
-  if (!foundURL) {
+  if (!urlDatabase[urlID]) {
     res.status(404).send(`Status Code ${res.statusCode}: Short URL doesn't yet exist!`);
   }
 
   //  --> Redirects user to the full webpage corresponding with the ID
-  const longURL = urlDatabase[urlID];
+  const longURL = urlDatabase[urlID].longURL;
   res.redirect(longURL);
 });
 // ***
@@ -269,7 +270,10 @@ app.post('/urls', (req, res) => {
   // --> POST request to 
   // --> Creating new random string, assigning it as key in urlDatabase w/ form input as value.
   const newShortURL = generateRandomString();
-  urlDatabase[newShortURL] = req.body.longURL;
+  urlDatabase[newShortURL] = {
+    longURL: req.body.longURL,
+    userID: null
+  };
   // --> Redirect to the urls_show page.
   res.redirect(`/urls/${newShortURL}`);
 });
@@ -281,7 +285,7 @@ app.post('/urls/:id', (req, res) => {
   const newLongURL = req.body.updatedURL;
   const urlID = req.params.id;
   // --> Finds key in urlDB using ID and changes the value to the input of the edit form.
-  urlDatabase[urlID] = newLongURL;
+  urlDatabase[urlID].longURL = newLongURL;
   res.redirect('/urls');
 });
 // ***
