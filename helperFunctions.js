@@ -34,7 +34,6 @@ const findUserByEmail = function(userDB, email) {
   return null;
 };
 
-
 /**
  * Finds all urls assigned to specific user
  * @param {object} urlDB 
