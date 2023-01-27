@@ -4,8 +4,9 @@ Welcome to TinyApp! TinyApp is a full-stack web application built with Node and 
 
 ## Final Product
 
-!["screenshot description"](#)
-!["screenshot description"](#)
+!["Screenshot of TinyApp URL's Page"](https://github.com/CodyHilborn/tinyapp/blob/master/docs/urls-page.png?raw=true)
+!["Screenshot of TinyApp Registration Page"](https://github.com/CodyHilborn/tinyapp/blob/master/docs/register-page.png?raw=true)
+!["Screenshot of TinyApp URL Edit Page"](https://github.com/CodyHilborn/tinyapp/blob/master/docs/edit-page.png?raw=true)
 
 ## Dependencies
 
